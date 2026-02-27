@@ -4,7 +4,6 @@ import 'package:advicely/data/model.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
-/// génère un conseil et retourne le texte traduit en français
 Future<Conseil> genererConseil() async {
   final client = http.Client();
   final uri = dotenv.env ["API_URL"] ?? "";
@@ -12,9 +11,9 @@ Future<Conseil> genererConseil() async {
   final reponse = await client.get(Uri.parse(uri), headers: {"X-Api-Key": cle});
   final json =
       jsonDecode(utf8.decode(reponse.bodyBytes))
-          as Map; // L'api ne retourne une liste dans ce cas présent.
+          as Map; 
 
-  // récupérer le texte en anglais puis traduire
+
   final anglais = json["advice"] as String;
   final francais = await _translateToFrench(anglais);
   json["advice"] = francais;
@@ -22,7 +21,7 @@ Future<Conseil> genererConseil() async {
   return Conseil.fromJSON(json);
 }
 
-/// Appel simple à un service de traduction public (MyMemory)
+
 Future<String> _translateToFrench(String text) async {
   try {
     final uri = Uri.parse(
@@ -37,6 +36,6 @@ Future<String> _translateToFrench(String text) async {
       }
     }
   } catch (_) {}
-  // en cas d'erreur on retourne le texte original
+
   return text;
 }
